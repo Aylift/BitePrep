@@ -19,3 +19,6 @@ def index(request):
         'portion_size': portion_size,
     }
     return render(request, 'Foods/index.html', context)
+
+def home(request):
+    return render(request, 'base.html')
