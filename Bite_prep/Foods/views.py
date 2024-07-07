@@ -1,13 +1,11 @@
-from django.template import loader
-from django.http import HttpResponse
+from django.shortcuts import render
 
 from .models import FoodCategory, Food, Nutrient, FoodNutrient
 
 
 def index(request):
-    foods = Food.name
-    template = loader.get_template('foods/index.html')
+    foods_list = Food.objects.all()
     context = {
-        'foods': foods,
+        'foods_list': foods_list,
     }
-    return HttpResponse(template.render(context, request))
+    return render(request, 'Foods/index.html', context)
