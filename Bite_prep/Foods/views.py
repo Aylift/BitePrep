@@ -4,7 +4,7 @@ from .models import FoodCategory, Food, Nutrient, FoodNutrient
 
 
 def index(request):
-    portion_size = request.GET.get('portion_size,', 100)
+    portion_size = request.GET.get('portion_size', 100)
     portion_size = float(portion_size)
 
     foods_list = Food.objects.all().prefetch_related('food_nutrients', 'category')
