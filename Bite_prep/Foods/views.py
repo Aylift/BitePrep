@@ -1,9 +1,10 @@
-from django.shortcuts import render
+from django.shortcuts import render, redirect
+from django.db.models import Q
+from .models import FoodCategory, Food, Nutrient, FoodNutrient, DiaryEntry
+from .forms import FoodSearchForm, DiaryEntryForm
 
-from .models import FoodCategory, Food, Nutrient, FoodNutrient
 
-
-def index(request):
+def foods_db(request):
     portion_size = request.GET.get('portion_size', 100)
     portion_size = float(portion_size)
 
@@ -18,7 +19,29 @@ def index(request):
         'foods_list': foods_list,
         'portion_size': portion_size,
     }
-    return render(request, 'Foods/index.html', context)
+    return render(request, 'Foods/foods_db.html', context)
 
 def home(request):
     return render(request, 'base.html')
+
+def diary(request):
+    if request.method == 'POST':
+        search_form = FoodSearchForm(request.POST)
+        entry_form = DiaryEntryForm(request.POST)
+        if 'search' in request.POST and search_form.is_valid():
+            query = search_form.cleaned_data['query']
+            foods = Food.objects.filter(Q(name_icontains=query) | Q(category__name__icontains=query))
+            return render(request, 'Foods/diary.html', {'search_form': search_form, 'entry_form': entry_form, 'foods': foods})
+        elif 'add' in request.POST and entry_form.is_valid():
+            entry_form.save()
+            return redirect('diary')
+    else:
+        search_form = FoodSearchForm()
+        entry_form = DiaryEntryForm()
+
+    diary_entries = DiaryEntry.objects.all()
+    return render(request, 'Foods/diary.html', {
+        'search_form': search_form,
+        'entry_form': entry_form,
+        'diary_entries': diary_entries
+    })

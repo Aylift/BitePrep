@@ -38,3 +38,10 @@ class FoodNutrient(models.Model):
     def __str__(self):
         return f"{self.amount_100g} {self.nutrient.unit} of {self.nutrient.name} in 100g of {self.food.name}"
     
+class DiaryEntry(models.Model):
+    food = models.ForeignKey(Food, on_delete=models.CASCADE)
+    portion_size = models.FloatField()
+    date = models.DateField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.portion_size}g of {self.food.name} on {self.date}"

@@ -1,0 +1,39 @@
+<!-- diary.html -->
+
+{% extends 'base.html' %}
+
+{% block title %}Diary{% endblock %}
+
+{% block content %}
+    <h2>This is my diary</h2>
+
+    <form method='post'>
+        {% csrf_token %}
+        {{ search_form.as_p }}
+        <button type='submit' name=search>Search</button>
+    </form>
+
+    {% if foods %}
+        <h3>Search Results</h3>
+        <ul>
+            {% for food in foods %}
+                <li>
+                    <form method='post' style='display:inline'>
+                        {{ food.name }} ({{ food.category.name }}) - {{ food.caloreis_100g }} calories per 100g
+                        {% csrf_token %}
+                        {{ entry_form.as_p }}
+                        <input type="hidden" name='food' value='{{ food.id }}'>
+                        <button type='submit' name='add'>Add to diary</button>
+                    </form>
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    <h3>Diary Entries</h3>
+    <ul>
+        {% for entry in diary_entries %}
+            <li>{{ entry.portion_size }}g of {{ entry.food.name }} on {{ entry.date }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
