@@ -30,8 +30,14 @@ def diary(request):
         entry_form = DiaryEntryForm(request.POST)
         if 'search' in request.POST and search_form.is_valid():
             query = search_form.cleaned_data['query']
-            foods = Food.objects.filter(Q(name_icontains=query) | Q(category__name__icontains=query))
-            return render(request, 'Foods/diary.html', {'search_form': search_form, 'entry_form': entry_form, 'foods': foods})
+            foods = Food.objects.filter(
+                Q(name__icontains=query) | Q(category__name__icontains=query)
+            )
+            return render(request, 'Foods/diary.html', 
+                          {'search_form': search_form, 
+                           'entry_form': entry_form, 
+                           'foods': foods
+                        })
         elif 'add' in request.POST and entry_form.is_valid():
             entry_form.save()
             return redirect('diary')
