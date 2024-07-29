@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from .models import FoodCategory, Food, Nutrient, FoodNutrient, DiaryEntry
-from .forms import FoodSearchForm, DiaryEntryForm
+from .forms import FoodSearchForm, DiaryEntryForm, FoodForm
 
 
 def foods_db(request):
@@ -14,10 +14,19 @@ def foods_db(request):
         food.calories = food.calories_100g * portion_size / 100
         for food_nutrient in food.food_nutrients.all():
             food_nutrient.amount = food_nutrient.amount_100g * portion_size / 100
+    
+    if request.method == 'POST':
+        form = FoodForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('foods_db')
+    else:
+        form = FoodForm()
 
     context= {
         'foods_list': foods_list,
         'portion_size': portion_size,
+        'form': form,
     }
     return render(request, 'Foods/foods_db.html', context)
 

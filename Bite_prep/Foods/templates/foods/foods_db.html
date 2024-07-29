@@ -26,4 +26,12 @@
     {% else %}
         <p>No foods are available.</p>
     {% endif %}
+
+    <h2>Add a new food</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Add Food</button>
+    </form>
+    
 {% endblock %}

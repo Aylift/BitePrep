@@ -11,3 +11,8 @@ class DiaryEntryForm(forms.ModelForm):
         widgets = {
             'food': forms.HiddenInput()
         }
+
+class FoodForm(forms.ModelForm):
+    class Meta:
+        model = Food
+        fields = ['name', 'category', 'description', 'calories_100g']
