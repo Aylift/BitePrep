@@ -14,6 +14,10 @@ def foods_db(request):
         food.calories = food.calories_100g * portion_size / 100
         for food_nutrient in food.food_nutrients.all():
             food_nutrient.amount = food_nutrient.amount_100g * portion_size / 100
+
+    form = FoodForm()
+    formset = FoodNutrientFormSet(instance=Food())
+    category_form = FoodCategoryForm()
     
     if request.method == 'POST':
         if 'add_food' in request.POST:
