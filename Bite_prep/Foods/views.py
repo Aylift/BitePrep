@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from .models import FoodCategory, Food, Nutrient, FoodNutrient, DiaryEntry
-from .forms import FoodSearchForm, DiaryEntryForm, FoodForm
+from .forms import FoodSearchForm, DiaryEntryForm, FoodForm, FoodNutrientFormSet
 
 
 def foods_db(request):
@@ -17,16 +17,21 @@ def foods_db(request):
     
     if request.method == 'POST':
         form = FoodForm(request.POST)
+        formset = FoodNutrientFormSet(request.POST, instance=Food())
         if form.is_valid():
+            formset.instance = food
+            formset.save()
             form.save()
             return redirect('foods_db')
     else:
         form = FoodForm()
+        formset = FoodNutrientFormSet(instance=Food())
 
     context= {
         'foods_list': foods_list,
         'portion_size': portion_size,
         'form': form,
+        'formset': formset,
     }
     return render(request, 'Foods/foods_db.html', context)
 
