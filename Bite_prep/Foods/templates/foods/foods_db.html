@@ -39,4 +39,11 @@
         <button type="submit">Add Food</button>
     </form>
     
+    <h2>Add a new category</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ category_form.as_p }}
+        <button type="submit" name="add_category">Add Category</button>
+    </form>
+
 {% endblock %}

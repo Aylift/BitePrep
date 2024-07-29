@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect
 from django.db.models import Q
 from .models import FoodCategory, Food, Nutrient, FoodNutrient, DiaryEntry
-from .forms import FoodSearchForm, DiaryEntryForm, FoodForm, FoodNutrientFormSet
+from .forms import FoodSearchForm, DiaryEntryForm, FoodForm, FoodNutrientFormSet, FoodCategoryForm
 
 
 def foods_db(request):
@@ -16,22 +16,31 @@ def foods_db(request):
             food_nutrient.amount = food_nutrient.amount_100g * portion_size / 100
     
     if request.method == 'POST':
-        form = FoodForm(request.POST)
-        formset = FoodNutrientFormSet(request.POST, instance=Food())
-        if form.is_valid():
-            formset.instance = food
-            formset.save()
-            form.save()
-            return redirect('foods_db')
+        if 'add_food' in request.POST:
+            form = FoodForm(request.POST)
+            formset = FoodNutrientFormSet(request.POST, instance=Food())
+            if form.is_valid() and formset.is_valid():
+                food = form.save()
+                formset.instance = food
+                formset.save()
+                return redirect('foods_db')
+        elif 'add_category' in request.POST:
+            category_form = FoodCategoryForm(request.POST)
+            if category_form.is_valid():
+                category_form.save()
+                return redirect('foods_db')
+        
     else:
         form = FoodForm()
         formset = FoodNutrientFormSet(instance=Food())
+        category_form = FoodCategoryForm()
 
     context= {
         'foods_list': foods_list,
         'portion_size': portion_size,
         'form': form,
         'formset': formset,
+        'category_form': category_form,
     }
     return render(request, 'Foods/foods_db.html', context)
 
