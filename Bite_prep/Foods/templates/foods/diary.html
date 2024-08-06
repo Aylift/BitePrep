@@ -31,7 +31,12 @@
     <h3>Diary Entries</h3>
     <ul>
         {% for entry in diary_entries %}
-            <li>{{ entry.portion_size }}g of {{ entry.food.name }} on {{ entry.date }}</li>
+            <li>{{ entry.portion_size }}g of {{ entry.food.name }} on {{ entry.date }}
+                <form action="{% url 'delete_diary_record' entry.pk %}" method="post" style="display:inline">
+                    {% csrf_token %}
+                    <button type="submit">Delete</button>
+                </form>
+            </li>
         {% endfor %}
     </ul>
 {% endblock %}

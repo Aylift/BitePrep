@@ -23,7 +23,7 @@ class FoodNutrientForm(forms.ModelForm):
         model = FoodNutrient
         fields = ['nutrient', 'amount_100g']
 
-FoodNutrientFormSet = inlineformset_factory(Food, FoodNutrient, form=FoodNutrientForm, extra=1)
+FoodNutrientFormSet = inlineformset_factory(Food, FoodNutrient, form=FoodNutrientForm, extra=3, min_num=3, max_num=3, validate_min=True, validate_max=True)
 
 class FoodCategoryForm(forms.ModelForm):
     class Meta:
