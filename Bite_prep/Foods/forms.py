@@ -1,6 +1,6 @@
 from django import forms
 from django.forms import inlineformset_factory
-from .models import Food, DiaryEntry, FoodNutrient, FoodCategory
+from .models import Food, DiaryEntry, FoodNutrient, FoodCategory, Nutrient
 
 class FoodSearchForm(forms.Form):
     query = forms.CharField(label='Search for food', max_length=100)
@@ -19,6 +19,8 @@ class FoodForm(forms.ModelForm):
         fields = ['name', 'category', 'description', 'calories_100g']
 
 class FoodNutrientForm(forms.ModelForm):
+    nutrient = forms.ModelChoiceField(queryset=Nutrient.objects.filter(name__in=['carbohydrates', 'fat', 'protein']))
+    
     class Meta:
         model = FoodNutrient
         fields = ['nutrient', 'amount_100g']

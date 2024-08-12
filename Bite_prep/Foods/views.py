@@ -5,9 +5,7 @@ from .forms import FoodSearchForm, DiaryEntryForm, FoodForm, FoodNutrientFormSet
 
 
 def foods_db(request):
-    portion_size = request.GET.get('portion_size', 100)
-    portion_size = float(portion_size)
-
+    portion_size = float(request.GET.get('portion_size', 100))
     foods_list = Food.objects.all().prefetch_related('food_nutrients', 'category')
 
     for food in foods_list:
@@ -16,30 +14,35 @@ def foods_db(request):
             food_nutrient.amount = food_nutrient.amount_100g * portion_size / 100
 
     form = FoodForm()
-    formset = FoodNutrientFormSet(instance=Food())
+    formset = FoodNutrientFormSet(queryset=FoodNutrient.objects.none())
     category_form = FoodCategoryForm()
-    
+
     if request.method == 'POST':
         if 'add_food' in request.POST:
             form = FoodForm(request.POST)
-            formset = FoodNutrientFormSet(request.POST, instance=Food())
+            formset = FoodNutrientFormSet(request.POST, queryset=FoodNutrient.objects.none())
             if form.is_valid() and formset.is_valid():
                 food = form.save()
-                formset.instance = food
-                formset.save()
+
+                for form in formset:
+                    food_nutrient = form.save(commit=False)
+                    food_nutrient.food = food
+                    food_nutrient.save()
+
                 return redirect('foods_db')
+
         elif 'add_category' in request.POST:
             category_form = FoodCategoryForm(request.POST)
             if category_form.is_valid():
                 category_form.save()
                 return redirect('foods_db')
-        
+
     else:
         form = FoodForm()
-        formset = FoodNutrientFormSet(instance=Food())
+        formset = FoodNutrientFormSet(queryset=FoodNutrient.objects.none())
         category_form = FoodCategoryForm()
 
-    context= {
+    context = {
         'foods_list': foods_list,
         'portion_size': portion_size,
         'form': form,
