@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.db.models import Q
 from .models import FoodCategory, Food, Nutrient, FoodNutrient, DiaryEntry
-from .forms import FoodSearchForm, DiaryEntryForm, FoodForm, FoodNutrientFormSet, FoodCategoryForm
+from .forms import FoodSearchForm, DiaryEntryForm, FoodForm, FoodCategoryForm, get_fixed_nutrient_formset
 
 
 def foods_db(request):
@@ -13,22 +13,17 @@ def foods_db(request):
         for food_nutrient in food.food_nutrients.all():
             food_nutrient.amount = food_nutrient.amount_100g * portion_size / 100
 
-    form = FoodForm()
-    formset = FoodNutrientFormSet(queryset=FoodNutrient.objects.none())
-    category_form = FoodCategoryForm()
-
     if request.method == 'POST':
         if 'add_food' in request.POST:
             form = FoodForm(request.POST)
-            formset = FoodNutrientFormSet(request.POST, queryset=FoodNutrient.objects.none())
+            formset = get_fixed_nutrient_formset(request.POST)
             if form.is_valid() and formset.is_valid():
                 food = form.save()
-
                 for form in formset:
-                    food_nutrient = form.save(commit=False)
-                    food_nutrient.food = food
-                    food_nutrient.save()
-
+                    if form.cleaned_data:  # Ensure the form is filled out
+                        food_nutrient = form.save(commit=False)
+                        food_nutrient.food = food
+                        food_nutrient.save()
                 return redirect('foods_db')
 
         elif 'add_category' in request.POST:
@@ -36,10 +31,9 @@ def foods_db(request):
             if category_form.is_valid():
                 category_form.save()
                 return redirect('foods_db')
-
     else:
         form = FoodForm()
-        formset = FoodNutrientFormSet(queryset=FoodNutrient.objects.none())
+        formset = get_fixed_nutrient_formset()  # Initialize empty formset
         category_form = FoodCategoryForm()
 
     context = {

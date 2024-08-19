@@ -31,8 +31,8 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
-        <h3>Nutrients</h3>
-        {{ formset.management_form }}
+        <h3>Nutrients per 100g</h3>
+        {{ formset.management_form }}  <!-- Important: Renders management form data for formset -->
         {% for form in formset %}
             {{ form.as_p }}
         {% endfor %}
