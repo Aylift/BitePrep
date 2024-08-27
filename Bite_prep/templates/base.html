@@ -4,8 +4,9 @@
     {% load static %}
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Main Page</title>
+    <title>{% block title %}BitePrep{% endblock %}</title>
     <link rel="stylesheet" type="text/css" href="{% static 'css/base_styles.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'css/foods_db_styles.css' %}">
 </head>
 <body>
     <header>
@@ -13,7 +14,7 @@
             <ul>
                 <li><a href="/">Home</a></li>
                 <li><a href="/foods_db">Food List</a></li>
-                <li><a href="/diary">My diary</a></li>
+                <li><a href="/diary">My Diary</a></li>
             </ul>
         </nav>
     </header>
