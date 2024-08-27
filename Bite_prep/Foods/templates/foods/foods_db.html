@@ -1,51 +1,49 @@
-<!-- foods_db.html -->
-
-<!-- foods_db.html -->
-
 {% extends 'base.html' %}
 
 {% block title %}Food List{% endblock %}
 
 {% block content %}
-    <h2>This is the list of all foods</h2>
-    <form method="get">
-        <label for="portion_size">Portion size (grams): </label>
-        <input type="number" id="portion_size" name="portion_size" value="{{ portion_size }}" min="1">
-        <button type="submit">Update</button>
-    </form>
-    {% if foods_list %}
-        <ul>
-            {% for food in foods_list %}
-                <li>{{ food.name }} ({{ food.category.name }}) - {{ food.calories }} calories
-                    <ul>
-                        {% for food_nutrient in food.food_nutrients.all %}
-                            <li>{{ food_nutrient.amount }} {{ food_nutrient.nutrient.unit }} of {{ food_nutrient.nutrient.name }}</li>
-                        {% endfor %}
-                    </ul>
-                </li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <p>No foods are available.</p>
-    {% endif %}
+    <div class="foods-container">
+        <h2>This is the list of all foods</h2>
+        <form method="get">
+            <label for="portion_size">Portion size (grams): </label>
+            <input type="number" id="portion_size" name="portion_size" value="{{ portion_size }}" min="1">
+            <button type="submit">Update</button>
+        </form>
+        {% if foods_list %}
+            <ul>
+                {% for food in foods_list %}
+                    <li>
+                        {{ food.name }} ({{ food.category.name }}) - {{ food.calories }} calories
+                        <ul>
+                            {% for food_nutrient in food.food_nutrients.all %}
+                                <li>{{ food_nutrient.amount }} {{ food_nutrient.nutrient.unit }} of {{ food_nutrient.nutrient.name }}</li>
+                            {% endfor %}
+                        </ul>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No foods are available.</p>
+        {% endif %}
 
-    <h2>Add a new food</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form.as_p }}
-        <h3>Nutrients per 100g</h3>
-        {{ formset.management_form }}  <!-- Important: Renders management form data for formset -->
-        {% for form in formset %}
+        <h2>Add a new food</h2>
+        <form method="post">
+            {% csrf_token %}
             {{ form.as_p }}
-        {% endfor %}
-        <button type="submit" name="add_food">Add Food</button>
-    </form>
-    
-    <h2>Add a new category</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ category_form.as_p }}
-        <button type="submit" name="add_category">Add Category</button>
-    </form>
-
+            <h3>Nutrients per 100g</h3>
+            {{ formset.management_form }}
+            {% for form in formset %}
+                {{ form.as_p }}
+            {% endfor %}
+            <button type="submit" name="add_food">Add Food</button>
+        </form>
+        
+        <h2>Add a new category</h2>
+        <form method="post">
+            {% csrf_token %}
+            {{ category_form.as_p }}
+            <button type="submit" name="add_category">Add Category</button>
+        </form>
+    </div>
 {% endblock %}
