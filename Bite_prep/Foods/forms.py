@@ -39,7 +39,7 @@ class FoodNutrientForm(forms.ModelForm):
 
 def get_fixed_nutrient_formset(data=None):
     nutrients = Nutrient.objects.filter(name__in=['carb', 'fat', 'protein'])
-    print(f"Nutrients fetched: {nutrients}")  # Debugging line
+    print(f"Nutrients fetched: {nutrients}")
 
     FormSet = formset_factory(FoodNutrientForm, extra=len(nutrients), max_num=len(nutrients))
     formset = FormSet(data)
@@ -47,7 +47,7 @@ def get_fixed_nutrient_formset(data=None):
     for form, nutrient in zip(formset.forms, nutrients):
         form.nutrient = nutrient
         form.fields['amount_100g'].label = f"Amount of {nutrient.name} per 100g"
-        print(f"Form label set for {nutrient.name}")  # Debugging line
+        print(f"Form label set for {nutrient.name}")
 
     return formset
 

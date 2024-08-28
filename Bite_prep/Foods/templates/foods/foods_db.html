@@ -10,6 +10,7 @@
             <input type="number" id="portion_size" name="portion_size" value="{{ portion_size }}" min="1">
             <button type="submit">Update</button>
         </form>
+
         {% if foods_list %}
             <ul>
                 {% for food in foods_list %}
@@ -28,7 +29,7 @@
         {% endif %}
 
         <h2>Add a new food</h2>
-        <form method="post">
+        <form id="food-form" method="post">
             {% csrf_token %}
             {{ form.as_p }}
             <h3>Nutrients per 100g</h3>
@@ -37,7 +38,7 @@
                 {{ form.as_p }}
             {% endfor %}
             <button type="submit" name="add_food">Add Food</button>
-        </form>
+        </form>        
         
         <h2>Add a new category</h2>
         <form method="post">
