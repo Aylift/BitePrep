@@ -85,3 +85,12 @@ def delete_diary_record(request, pk):
         return redirect('diary')
     
     return render(request, 'Foods/diary.html', {'record': record})
+
+def delete_food_record(request, pk):
+    record = get_object_or_404(Food, pk=pk)
+
+    if request.method == 'POST':
+        record.delete()
+        return redirect('foods_db')
+
+    return render(request, 'Foods/food_diary.html', {'record': record})

@@ -21,6 +21,10 @@
                                 <li>{{ food_nutrient.amount }} {{ food_nutrient.nutrient.unit }} of {{ food_nutrient.nutrient.name }}</li>
                             {% endfor %}
                         </ul>
+                        <form action="{% url 'delete_food_record' food.pk %}" method="post" style="display:inline">
+                            {% csrf_token %}
+                            <button type="submit">Delete</button>
+                        </form>
                     </li>
                 {% endfor %}
             </ul>
